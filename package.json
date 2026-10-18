@@ -1,0 +1,39 @@
+{
+  "name": "my-claude-code",
+  "version": "1.0.0",
+  "description": "A powerful agentic coding assistant CLI engineered from Claude Code with multi-model support",
+  "type": "module",
+  "bin": {
+    "myclaude": "./bin/myclaude.js",
+    "claude-code": "./bin/myclaude.js"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/cli.ts",
+    "start": "node ./bin/myclaude.js",
+    "test": "node --test"
+  },
+  "keywords": [
+    "claude-code",
+    "ai-agent",
+    "coding-assistant",
+    "terminal-agent",
+    "cli"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@google/genai": "^2.30.0",
+    "chalk": "^5.4.1",
+    "dotenv": "^16.4.7",
+    "fast-glob": "^3.3.3",
+    "openai": "^4.86.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
+  }
+}
