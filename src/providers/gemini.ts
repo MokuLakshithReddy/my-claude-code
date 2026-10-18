@@ -9,7 +9,7 @@ export class GeminiProvider extends BaseProvider {
   model: string;
   private client: GoogleGenAI;
 
-  constructor(apiKey: string, model: string = "gemini-3.5-flash") {
+  constructor(apiKey: string, model: string = "gemini-3.1-flash-lite") {
     super();
     this.model = model;
     this.client = new GoogleGenAI({ apiKey });
