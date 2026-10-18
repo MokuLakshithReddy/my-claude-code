@@ -8,7 +8,7 @@ export class GeminiProvider extends BaseProvider {
   model: string;
   private client: GoogleGenAI;
 
-  constructor(apiKey: string, model: string = "gemini-3.8-flash") {
+  constructor(apiKey: string, model: string = "gemini-flash-latest") {
     super();
     this.model = model;
     this.client = new GoogleGenAI({ apiKey });
@@ -31,22 +31,29 @@ export class GeminiProvider extends BaseProvider {
           parts: [{ text: msg.content }]
         });
       } else if (msg.role === "assistant") {
-        const parts: any[] = [];
-        if (msg.content) parts.push({ text: msg.content });
-        if (msg.toolCalls) {
-          for (const tc of msg.toolCalls) {
-            parts.push({
-              functionCall: {
-                name: tc.name,
-                args: tc.arguments
-              }
-            });
+        if (msg.rawParts && msg.rawParts.length > 0) {
+          contents.push({
+            role: "model",
+            parts: msg.rawParts
+          });
+        } else {
+          const parts: any[] = [];
+          if (msg.content) parts.push({ text: msg.content });
+          if (msg.toolCalls) {
+            for (const tc of msg.toolCalls) {
+              parts.push({
+                functionCall: {
+                  name: tc.name,
+                  args: tc.arguments
+                }
+              });
+            }
           }
+          contents.push({
+            role: "model",
+            parts: parts.length > 0 ? parts : [{ text: "" }]
+          });
         }
-        contents.push({
-          role: "model",
-          parts: parts.length > 0 ? parts : [{ text: "" }]
-        });
       } else if (msg.role === "tool") {
         contents.push({
           role: "user",
@@ -64,22 +71,35 @@ export class GeminiProvider extends BaseProvider {
 
     const geminiTools = options?.planMode ? undefined : tools.toGeminiTools();
 
-    const response = await this.client.models.generateContent({
-      model: this.model,
-      contents,
-      config: {
-        systemInstruction: systemPrompt ? { parts: [{ text: systemPrompt }] } : undefined,
-        tools: geminiTools
+    let response: any;
+    for (let attempt = 0; attempt < 4; attempt++) {
+      try {
+        response = await this.client.models.generateContent({
+          model: this.model,
+          contents,
+          config: {
+            systemInstruction: systemPrompt ? { parts: [{ text: systemPrompt }] } : undefined,
+            tools: geminiTools
+          }
+        });
+        break;
+      } catch (err: any) {
+        if ((err.status === 429 || err.message?.includes("429") || err.message?.includes("quota") || err.status === 503) && attempt < 3) {
+          await new Promise(r => setTimeout(r, 5000));
+          continue;
+        }
+        throw err;
       }
-    });
+    }
 
     let fullText = "";
     const toolCalls: ToolCall[] = [];
 
-    const candidates = response.candidates || [];
+    const candidates = response?.candidates || [];
+    let returnedParts: any[] = [];
     if (candidates.length > 0) {
-      const parts = candidates[0].content?.parts || [];
-      for (const part of parts) {
+      returnedParts = candidates[0].content?.parts || [];
+      for (const part of returnedParts) {
         if (part.text) {
           fullText += part.text;
           if (options?.onChunk) {
@@ -101,7 +121,8 @@ export class GeminiProvider extends BaseProvider {
       message: {
         role: "assistant",
         content: fullText,
-        toolCalls: toolCalls.length > 0 ? toolCalls : undefined
+        toolCalls: toolCalls.length > 0 ? toolCalls : undefined,
+        rawParts: returnedParts
       },
       usage: {
         inputTokens: usage?.promptTokenCount || 0,

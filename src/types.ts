@@ -33,6 +33,7 @@ export interface ChatMessage {
   toolCalls?: ToolCall[];
   toolCallId?: string;
   name?: string;
+  rawParts?: any[];
 }
 
 export interface TodoItem {
