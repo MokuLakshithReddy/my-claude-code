@@ -57,7 +57,7 @@ export function resolveConfig(overrides: Partial<AppConfig> = {}): AppConfig {
     } else if (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY) {
       provider = "gemini";
       apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
-      if (!model) model = "gemini-flash-latest";
+      if (!model) model = "gemini-3.5-flash";
     } else if (process.env.DEEPSEEK_API_KEY) {
       provider = "deepseek";
       apiKey = process.env.DEEPSEEK_API_KEY;
@@ -73,7 +73,7 @@ export function resolveConfig(overrides: Partial<AppConfig> = {}): AppConfig {
   if (!model) {
     if (provider === "anthropic") model = "claude-3-7-sonnet-20250219";
     else if (provider === "openai") model = "gpt-4o";
-    else if (provider === "gemini") model = "gemini-flash-latest";
+    else if (provider === "gemini") model = "gemini-3.5-flash";
     else if (provider === "deepseek") model = "deepseek-chat";
   }
 
