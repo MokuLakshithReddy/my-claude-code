@@ -1,4 +1,5 @@
 import path from "path";
+import { fileURLToPath } from "url";
 import chalk from "chalk";
 import { resolveConfig } from "./config/config.js";
 import { AgentSession } from "./agent/loop.js";
@@ -153,7 +154,10 @@ export async function main() {
   }
 }
 
-main().catch(err => {
-  console.error(chalk.red(`Fatal Error: ${err.message}`));
-  process.exit(1);
-});
+const isMainModule = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
+if (isMainModule) {
+  main().catch(err => {
+    console.error(chalk.red(`Fatal Error: ${err.message}`));
+    process.exit(1);
+  });
+}
