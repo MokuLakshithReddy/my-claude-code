@@ -99,3 +99,10 @@ Run the built-in diagnostic tool anytime:
 myclaude /doctor
 ```
 Or inside the REPL, type `/doctor`.
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE) - see the [LICENSE](LICENSE) file for details.
+

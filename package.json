@@ -21,7 +21,7 @@
     "terminal-agent",
     "cli"
   ],
-  "author": "",
+  "author": "Moku Lakshith Reddy",
   "license": "MIT",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
