@@ -1,4 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
+import chalk from "chalk";
 import { BaseProvider, ProviderResponse, ProviderOptions } from "./base.js";
 import { ChatMessage, ToolCall } from "../types.js";
 import { ToolRegistry } from "../tools/registry.js";
@@ -85,7 +86,10 @@ export class GeminiProvider extends BaseProvider {
         break;
       } catch (err: any) {
         if ((err.status === 429 || err.message?.includes("429") || err.message?.includes("quota") || err.status === 503) && attempt < 3) {
-          await new Promise(r => setTimeout(r, 5000));
+          const match = err.message?.match(/Please retry in ([\d.]+)s/);
+          const waitMs = match ? (parseFloat(match[1]) + 1.5) * 1000 : 6000;
+          process.stdout.write(chalk.dim(`\n[Free-tier rate limit: waiting ${(waitMs/1000).toFixed(0)}s for quota to refresh before continuing...]\n`));
+          await new Promise(r => setTimeout(r, Math.min(waitMs, 65000)));
           continue;
         }
         throw err;
