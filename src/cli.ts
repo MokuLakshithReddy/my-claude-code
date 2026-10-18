@@ -102,7 +102,7 @@ export async function main() {
   if (promptText) {
     console.log(chalk.dim(`\nRunning query: "${promptText}"\n`));
     await session.run(promptText);
-    process.exit(0);
+    return;
   }
 
   // Interactive REPL mode
