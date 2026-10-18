@@ -100,6 +100,16 @@ export async function main() {
 
   // Non-interactive mode (prompt provided on CLI)
   if (promptText) {
+    if (promptText.startsWith("/")) {
+      const parts = promptText.slice(1).split(" ");
+      const cmdName = parts[0].toLowerCase();
+      const cmdArgs = parts.slice(1);
+      const command = slashCommands[cmdName];
+      if (command) {
+        await command.execute(session, cmdArgs);
+        return;
+      }
+    }
     console.log(chalk.dim(`\nRunning query: "${promptText}"\n`));
     await session.run(promptText);
     return;
