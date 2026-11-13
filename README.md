@@ -1,5 +1,8 @@
 # My Claude Code (Engineered Edition)
 
+[![Stars](https://img.shields.io/github/stars/MokuLakshithReddy/my-claude-code?style=flat-square)](https://github.com/MokuLakshithReddy/my-claude-code/stargazers) [![Forks](https://img.shields.io/github/forks/MokuLakshithReddy/my-claude-code?style=flat-square)](https://github.com/MokuLakshithReddy/my-claude-code/forks) [![Open Issues](https://img.shields.io/github/issues/MokuLakshithReddy/my-claude-code?style=flat-square)](https://github.com/MokuLakshithReddy/my-claude-code/issues) [![Last Commit](https://img.shields.io/github/last-commit/MokuLakshithReddy/my-claude-code?style=flat-square)](https://github.com/MokuLakshithReddy/my-claude-code/commits/main)
+
+
 > An autonomous agentic coding assistant CLI engineered directly from Anthropic's Claude Code architecture using evidence-driven reverse engineering methodology.
 
 
