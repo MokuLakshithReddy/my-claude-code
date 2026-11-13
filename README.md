@@ -2,11 +2,26 @@
 
 A terminal-based coding assistant built in TypeScript. It combines a persistent agent session, multi-provider model adapters, a workspace-aware tool registry, project memory through CLAUDE.md, and both interactive REPL and one-shot CLI workflows.
 
-![GitHub stars](https://img.shields.io/github/stars/MokuLakshithReddy/my-claude-code?style=flat-square&label=stars)
-![GitHub forks](https://img.shields.io/github/forks/MokuLakshithReddy/my-claude-code?style=flat-square&label=forks)
-![Open issues](https://img.shields.io/github/issues/MokuLakshithReddy/my-claude-code?style=flat-square&label=open%20issues)
-![Last commit](https://img.shields.io/github/last-commit/MokuLakshithReddy/my-claude-code?style=flat-square)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white)
+[![GitHub stars](https://img.shields.io/github/stars/MokuLakshithReddy/my-claude-code?style=flat-square&label=stars)](https://github.com/MokuLakshithReddy/my-claude-code/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/MokuLakshithReddy/my-claude-code?style=flat-square&label=forks)](https://github.com/MokuLakshithReddy/my-claude-code/network/members)
+[![Open issues](https://img.shields.io/github/issues/MokuLakshithReddy/my-claude-code?style=flat-square&label=open%20issues)](https://github.com/MokuLakshithReddy/my-claude-code/issues)
+[![Last commit](https://img.shields.io/github/last-commit/MokuLakshithReddy/my-claude-code?style=flat-square)](https://github.com/MokuLakshithReddy/my-claude-code/commits/main)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+
+### Runtime and verification
+
+The CLI is packaged as the `myclaude` executable and supports a single-shot prompt or an interactive REPL. The provider factory selects a configured Anthropic, OpenAI, Gemini, or OpenAI-compatible endpoint; tool implementations are registered centrally and scoped to the configured working directory.
+
+| Check | Command |
+|---|---|
+| Install dependencies | `npm install` |
+| Compile TypeScript | `npm run build` |
+| Run Node test suite | `npm test` |
+| Run development CLI | `npm run dev` |
+
+The checked-in test file exercises tool registration/aliases, memory-file generation, and basic Glob/FileRead execution. This is a functional smoke-test suite, not a benchmark of model coding quality or a guarantee that every provider/model is supported at every version.
+
+---
 
 ## Why it matters
 
