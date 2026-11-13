@@ -2,6 +2,38 @@
 
 > An autonomous agentic coding assistant CLI engineered directly from Anthropic's Claude Code architecture using evidence-driven reverse engineering methodology.
 
+
+## Agent execution flow
+
+~~~mermaid
+flowchart TD
+    A["CLI prompt or interactive REPL"] --> B["Load config, provider and CLAUDE.md"]
+    B --> C["Agent conversation loop"]
+    C --> D["Model provider"]
+    D --> E["Tool registry"]
+    E --> F["Bash / file tools / search / web fetch / todos"]
+    F --> G["Tool results returned to agent"]
+    G --> C
+    C --> H["Stream response and session usage"]
+~~~
+
+### Runtime and verification
+
+The CLI is packaged as the myclaude executable and supports a single-shot prompt or an interactive REPL. The provider factory selects a configured Anthropic, OpenAI, Gemini, or OpenAI-compatible endpoint; tool implementations are registered centrally and scoped to the configured working directory.
+
+| Check | Command |
+|---|---|
+| Install dependencies | npm install |
+| Compile TypeScript | npm run build |
+| Run Node test suite | npm test |
+| Run development CLI | npm run dev |
+
+The checked-in test file exercises tool registration/aliases, memory-file generation, and basic Glob/FileRead execution. This is a functional smoke-test suite, not a benchmark of model coding quality or a guarantee that every provider/model is supported at every version.
+
+**Why it matters:** combines a tool-using terminal agent with project-specific memory and provider choice, so the assistant can inspect and modify a repository instead of only discussing code.
+
+---
+
 ---
 
 ## 🎯 Architecture & Capabilities
