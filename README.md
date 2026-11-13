@@ -1,108 +1,92 @@
-# My Claude Code (Engineered Edition)
+# My Claude Code — Multi-Provider Agentic Coding CLI
 
-> An autonomous agentic coding assistant CLI engineered directly from Anthropic's Claude Code architecture using evidence-driven reverse engineering methodology.
+A terminal-based coding assistant built in TypeScript. It combines a persistent agent session, multi-provider model adapters, a workspace-aware tool registry, project memory through CLAUDE.md, and both interactive REPL and one-shot CLI workflows.
 
----
+![GitHub stars](https://img.shields.io/github/stars/MokuLakshithReddy/my-claude-code?style=flat-square&label=stars)
+![GitHub forks](https://img.shields.io/github/forks/MokuLakshithReddy/my-claude-code?style=flat-square&label=forks)
+![Open issues](https://img.shields.io/github/issues/MokuLakshithReddy/my-claude-code?style=flat-square&label=open%20issues)
+![Last commit](https://img.shields.io/github/last-commit/MokuLakshithReddy/my-claude-code?style=flat-square)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white)
 
-## 🎯 Architecture & Capabilities
+## Why it matters
 
-Engineered following the inspection methodology of **REA (`morluto/rea`)** and decompiled analysis of **Claude Code (`anthropics/claude-code`)**, this CLI delivers the complete Claude Code experience with enhanced multi-provider flexibility:
+Coding agents need more than a chat loop. They must inspect a workspace, use tools, retain project conventions, support different model providers, and expose the actions they are taking. This project explores those building blocks in a locally run CLI.
 
-### 1. Interactive Terminal REPL & CLI Mode
-- **Interactive REPL**: Rich terminal interface with model badges, path tracking, and live streaming tokens.
-- **Single-shot Execution**: `myclaude "fix the failing tests"` or `myclaude -p "explain index.ts"`.
-- **Architectural Plan Mode**: Run with `--plan` or `/plan` for read-only planning before modifying files.
+## Architecture
 
-### 2. Core Agentic Toolset (Faithful to Claude Code Contracts)
-- **`Bash`**: Runs commands with real-time feedback, timeouts, and safe error capture.
-- **`FileRead` (`View`)**: Read files with line numbers (`1: content`) and section paging (`offset` / `limit`).
-- **`FileEdit` (`Replace`)**: Precise search-and-replace edits with unique hunk verification and colorized diff output.
-- **`FileWrite` (`Edit`)**: Create new files or overwrite files with automatic directory provisioning.
-- **`Glob`**: Ultra-fast file pattern matching across the repository.
-- **`Grep`**: Deep regex and string content searching with line numbers and file grouping.
-- **`LS`**: Directory listing with file metadata and tree overview.
-- **`TodoWrite`**: Dynamic multi-step task list tracking (`pending`, `in_progress`, `completed`).
-- **`WebFetch`**: Fetch documentation and web content.
+```mermaid
+flowchart TD
+    U["User prompt / CLI flags"] --> C["CLI argument parser"]
+    C --> CFG["Resolve provider, model, workspace and permissions"]
+    CFG --> P["Provider factory"]
+    P --> A["AgentSession"]
+    A --> M["System prompt + CLAUDE.md memory"]
+    A --> L["Bounded agent loop"]
+    L --> R["Provider chat / streamed response"]
+    R --> T{"Model requests tools?"}
+    T -->|"Yes"| TR["ToolRegistry"]
+    TR --> X["Bash, file read/write/edit, glob, grep, ls, todo, web"]
+    X --> L
+    T -->|"No"| O["Final response"]
+    L --> UI["Interactive terminal REPL or one-shot output"]
+```
 
-### 3. Multi-Provider LLM Engine
-Unlike official Claude Code which is restricted exclusively to Anthropic Claude, this edition supports:
-- **Anthropic Claude**: `claude-3-7-sonnet`, `claude-3-5-sonnet`, `claude-3-5-haiku`, `claude-3-opus`
-- **OpenAI**: `gpt-4o`, `gpt-4o-mini`, `o1`, `o3-mini`
-- **DeepSeek**: `deepseek-chat`, `deepseek-coder`
-- **Google Gemini**: `gemini-2.5-flash`, `gemini-2.5-pro`
-- **Local Models**: Ollama, vLLM, and any OpenAI-compatible API endpoint via `OPENAI_BASE_URL`.
+## What is implemented
 
-### 4. Memory System (`CLAUDE.md`)
-- Auto-detects and loads project build commands, testing procedures, style conventions, and architecture notes from `CLAUDE.md`.
-- Proactively suggests writing new test/build commands to memory so it remembers them next time.
+- Interactive REPL with workspace and model context.
+- One-shot mode through the print CLI option.
+- Provider adapters for Anthropic, OpenAI, Gemini, and DeepSeek.
+- Agent loop with streamed output, tool-call execution, and a bounded 25-iteration turn.
+- Workspace tools: Bash, file read/write/edit, glob, grep, directory listing, todo tracking, and web fetch.
+- Plan mode for read-only planning.
+- Project guidance loaded from CLAUDE.md.
+- Slash commands for help, clear, compact, cost, doctor, init, plan, and exit.
 
-### 5. Slash Commands
-| Command | Action |
-|---|---|
-| `/help` | Display command menu and keyboard shortcuts |
-| `/clear` | Clear conversation history and reset context |
-| `/compact` | Compact conversation history to reduce context window usage |
-| `/cost` | Display total tokens (input/output), tool counts, and session duration |
-| `/doctor` | Run health check on environment, git, and API credentials |
-| `/init` | Auto-generate `CLAUDE.md` with project guidelines |
-| `/plan` | Toggle architectural plan mode on/off |
-| `/exit` | Exit the CLI session |
+## Quick start
 
----
+Requirements: Node.js, npm, and an API key for at least one supported provider.
 
-## 🚀 Quick Start
-
-### 1. Installation
 ```bash
-git clone <repo-url>
-cd My_Version_of_ClaudeCode
+git clone https://github.com/MokuLakshithReddy/my-claude-code.git
+cd my-claude-code
 npm install
 npm run build
-```
-
-### 2. Configure Your API Key
-Copy the `.env.example` to `.env` and set at least one model provider key:
-```bash
 cp .env.example .env
 ```
-For example:
+
+Add one provider key to the local .env file:
+
 ```env
-ANTHROPIC_API_KEY=sk-ant-...
-# or
-OPENAI_API_KEY=sk-...
-# or
-GEMINI_API_KEY=AIza...
-# or
-DEEPSEEK_API_KEY=sk-...
+ANTHROPIC_API_KEY=your_key
+# Or configure OPENAI_API_KEY, GEMINI_API_KEY, or DEEPSEEK_API_KEY
 ```
 
-### 3. Launch
+Keep private API keys in your local environment. Do not commit .env files or paste keys into source code.
+
 Run interactively:
+
 ```bash
 npm start
-# or
-node bin/myclaude.js
 ```
 
-Or install globally into your PATH:
+Run a one-shot prompt:
+
 ```bash
-npm link
-myclaude
+node bin/myclaude.js -p "Explain the structure of this repository"
 ```
 
----
+Run tests:
 
-## 🛠️ Verification & Health Check
-
-Run the built-in diagnostic tool anytime:
 ```bash
-myclaude /doctor
+npm test
 ```
-Or inside the REPL, type `/doctor`.
 
----
+## Safety notes
 
-## 📄 License
+Tool execution can read and modify files or run shell commands in the selected workspace. Review tool actions and keep permission prompts enabled for unfamiliar repositories. The auto-approve flag deliberately bypasses interactive approvals and should only be used in trusted, isolated environments.
 
-This project is licensed under the [MIT License](LICENSE) - see the [LICENSE](LICENSE) file for details.
+## Evidence status
 
+The package defines a Node.js test-runner command, but this README does not claim a test count, coding benchmark, or model-quality score. Publish those only with a reproducible test run and the exact model/configuration used.
+
+[Browse the source](https://github.com/MokuLakshithReddy/my-claude-code)
